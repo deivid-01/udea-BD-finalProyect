@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/reg_cyclist.unity
     guid: f4325092f3b3d764480e480c3a48e803
+  - enabled: 1
+    path: Assets/Scenes/Search_cycle.unity
+    guid: 23ed0075449d06c43a6f08d8cf6f3913
+  - enabled: 1
+    path: Assets/Scenes/Search_team.unity
+    guid: 1c19e747a829d4d4e962016f49d084cc
   m_configObjects: {}
