@@ -24,7 +24,7 @@ public class RestoreEnableButton : MonoBehaviour
     {
         if ( !btn.activeInHierarchy )
         {
-            yield return new WaitForSeconds ( 0.1f );
+            yield return new WaitForSeconds ( 0.5f );
             btn.SetActive ( true );
             btn.GetComponent<ButtonActions> ().secondary.SetActive ( false );
         }

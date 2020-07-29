@@ -90,6 +90,8 @@ public class ui_regTeam : MonoBehaviour
             //Send to dataBase
             Data.instance.AddTeamDB();
 
+            SceneManager.LoadScene ( "Home" );
+
         }
     }
 

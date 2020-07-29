@@ -10,22 +10,9 @@ public class Data : MonoBehaviour
 {
     #region Singlenton
     public static Data instance;
-    private void Awake ()
-    {
-        if ( instance is null )
-        {
-            DontDestroyOnLoad ( this.gameObject );
-            instance = this;
-        }
-        
 
-    }
 
-    private void Start ()
-    {
-        Debug.Log ( DateTime.Now.ToShortDateString () );
-    }
-    #endregion
+
 
 
     public Team team;
@@ -34,48 +21,107 @@ public class Data : MonoBehaviour
 
     public List<Cyclist> cyclists=new List<Cyclist>();
 
-    public  void AddTeamDB ()
+    private void Awake ()
+    {
+        if ( instance is null )
+        {
+            DontDestroyOnLoad ( this.gameObject );
+            instance = this;
+        }
+
+
+    }
+
+    #endregion
+
+    public void AddTeamDB ()
     {
         StartCoroutine ( SendTeamDB () );
     }
     IEnumerator SendTeamDB ()
     {
-        #region Register Team
+   
 
 
-        WWWForm form = new WWWForm();
-        form.AddField ( "name" , team.name);
-        form.AddField ( "city" , team.city);
-        form.AddField ( "coach" , team.couchName);
-        form.AddField ( "regdate" , DateTime.Now.ToShortDateString()); //DateTime.Now.ToString()
-        UnityWebRequest www=  UnityWebRequest.Post("http://localhost/sqlconnect/register_team.php",form);
+        WWWForm form = new WWWForm ();
+        form.AddField ( "name" , team.name );
+        form.AddField ( "city" , team.city );
+        form.AddField ( "coach" , team.couchName );
+        form.AddField ( "regdate" , DateTime.Now.ToShortDateString () ); //DateTime.Now.ToString()
+        UnityWebRequest www = UnityWebRequest.Post ( "http://localhost/sqlconnect/register_team.php" , form );
         yield return www.SendWebRequest ();
-        if ( www.downloadHandler.text == "0" )
+
+        var result = www.downloadHandler.text;
+        if ( result != "-1" )
         {
-            Debug.Log ( "Team  creation success" );
-            AddCyclistDB ();
+
+            Debug.Log ( result );
+            AddCyclistDB ( result );
         }
         else
         {
             Debug.Log ( www.downloadHandler.text );
-            Debug.Log ( www.downloadHandler.data );
 
         }
-       // if ( www.isNetworkError || www.isHttpError )
-    
-        
 
-      
 
-   
 
-     #endregion
+
+
+
+
 
 
     }
 
-    public void AddCyclistDB () { 
+    public void AddCyclistDB ( string id ) {
 
-        //SEARCH TEAM NAME ON DB, GET AND ASIGGN ID NUMBER TO ID CYCLLIST TEAM    
+        foreach ( Cyclist c in cyclists )
+        {
+            c.idTeam = id;
+            StartCoroutine ( RegisterCyclists ( c ) );
+
+        }
+
+
+
+
     }
+
+    public static IEnumerator RegisterCyclists ( Cyclist c )
+
+
+    {
+        WWWForm form = new WWWForm ();
+        form.AddField ( "name" , c.name );
+        form.AddField ( "lastname" , c.lastname );
+        form.AddField ( "birthdate" , c.dateOfBirth );
+        form.AddField ( "regdate" , DateTime.Now.ToShortDateString () );
+        form.AddField ( "bikebrand" , c.brandBike );
+        form.AddField ( "idteam" , c.idTeam );
+
+        UnityWebRequest www = UnityWebRequest.Post ( "http://localhost/sqlconnect/register_cyclist.php" , form );
+
+        yield return www.SendWebRequest ();
+
+        var result = www.downloadHandler.text;
+        if ( result == "0" )
+        {
+            Debug.Log ( "Created Cyclist Success" );
+
+
+        }
+        else
+        {
+            Debug.Log ( www.downloadHandler.text );
+
+        }
+    }
+
+
+
+
+
+
+
 }
