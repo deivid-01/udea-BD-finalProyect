@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class search_cyclist : MonoBehaviour
 {
@@ -118,6 +119,33 @@ public class search_cyclist : MonoBehaviour
         }
     }
 
+    public void DeleteCyclist (Text id)
+    {
+        StartCoroutine ( DeleteFromDb ( id.text ) );     
+    }
+
+    IEnumerator DeleteFromDb ( string id )
+
+    {
+        WWWForm form = new WWWForm ();
+        form.AddField ( "id" , id );
+
+        UnityWebRequest www = UnityWebRequest.Post ( "http://localhost/sqlconnect/delete_cyclist.php" , form );
+
+        yield return www.SendWebRequest ();
+
+        var result = www.downloadHandler.text;
+
+        if ( result != "-1" )
+        {
+            SceneManager.LoadScene ( "Home" );
+        }
+        else
+        {
+            Debug.Log ( www.downloadHandler.text );
+        }
+
+    }
 
     public struct DataCyclist {
 

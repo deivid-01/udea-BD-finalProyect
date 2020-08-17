@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class search_team : MonoBehaviour
 {
@@ -114,6 +115,37 @@ public class search_team : MonoBehaviour
             }
         }
     }
+
+    public void DeleteTeam ( Text id )
+    {
+        StartCoroutine ( DeleteFromDb ( id.text ) );
+    }
+
+    IEnumerator DeleteFromDb ( string id )
+
+    {
+        WWWForm form = new WWWForm ();
+        form.AddField ( "id" , id );
+
+        UnityWebRequest www = UnityWebRequest.Post ( "http://localhost/sqlconnect/delete_team.php" , form );
+
+        yield return www.SendWebRequest ();
+
+        var result = www.downloadHandler.text;
+
+        if ( result != "-1" )
+        {
+            SceneManager.LoadScene ( "Home" );
+        }
+        else
+        {
+            Debug.Log ( www.downloadHandler.text );
+        }
+
+    }
+
+
+
 
 
     public struct DataTeam {
